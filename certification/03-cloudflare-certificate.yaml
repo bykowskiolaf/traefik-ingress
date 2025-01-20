@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-bykowski.dev
+  namespace: traefik
+spec:
+  secretName: wildcard-bykowski.dev-tls
+  dnsNames:
+    - "bykowski.dev"
+    - "*.bykowski.dev"
+  issuerRef:
+    name: cloudflare-issuer
+    kind: Issuer

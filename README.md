@@ -3,7 +3,10 @@
 ## Prerequisites
 1. **Kubernetes Cluster**: Ensure you have a running Kubernetes cluster (e.g., K3s).
 2. **kubectl**: Installed and configured to connect to your cluster.
-3. **Cloudflare API Token**: You’ll need a Cloudflare API token with DNS edit permissions.
+3. **Cloudflare API Token**: You’ll need a Cloudflare API token with permissions:
+   - Zone – Zone – Read
+   - Zone – DNS – Edit
+
 
 ---
 

@@ -23,6 +23,8 @@ spec:
             - --entrypoints.web.address=:80
             - --entrypoints.websecure.address=:443
             - --providers.kubernetesingress
+            - --providers.kubernetescrd.allowCrossNamespace=true
+            - --providers.kubernetescrd.allowExternalNameServices=true
             - --log.level=DEBUG
           ports:
             - name: web

@@ -10,6 +10,7 @@ rules:
       - services
       - secrets
       - nodes
+      - endpoints
     verbs:
       - get
       - list

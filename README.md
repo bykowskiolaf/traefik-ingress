@@ -3,14 +3,26 @@
 ## Prerequisites
 1. **Kubernetes Cluster**: Ensure you have a running Kubernetes cluster (e.g., K3s).
 2. **kubectl**: Installed and configured to connect to your cluster.
-3. **Cloudflare API Token**: You’ll need a Cloudflare API token with permissions:
-   - Zone – Zone – Read
-   - Zone – DNS – Edit
-
+3. **Cloudflare API Token**: You’ll need a Cloudflare API token with DNS edit permissions.
 
 ---
 
-## Step 1: Configure the Cloudflare API Token Secret
+## Step 1: Set Up the Namespace
+1. **Create a Namespace**:
+   Apply the namespace definition:
+   ```bash
+   kubectl apply -f 00-namespace.yaml
+   ```
+
+2. **Verify the Namespace**:
+   Ensure the namespace is created:
+   ```bash
+   kubectl get namespaces
+   ```
+
+---
+
+## Step 2: Configure the Cloudflare API Token Secret
 The file `01-cloudflare-api-token-secret.yaml` is ignored in version control for security reasons.
 
 1. **Create the Secret File**:
@@ -32,7 +44,7 @@ The file `01-cloudflare-api-token-secret.yaml` is ignored in version control for
 
 ---
 
-## Step 2: Deploy Cert-Manager for Cloudflare Certificate
+## Step 3: Deploy Cert-Manager for Cloudflare Certificate
 
 1. **Apply the Cloudflare API Secret**:
    ```bash
@@ -49,7 +61,12 @@ The file `01-cloudflare-api-token-secret.yaml` is ignored in version control for
    kubectl apply -f certification/03-cloudflare-certificate.yaml
    ```
 
-4. **Verify the Certificate**:
+4. **Deploy the TLSStore**:
+   ```bash
+   kubectl apply -f certification/04-tlsstore.yaml
+   ```
+
+5. **Verify the Certificate**:
    ```bash
    kubectl get certificates -n cert-manager
    kubectl describe certificate wildcard-bykowski.dev -n cert-manager
@@ -57,35 +74,35 @@ The file `01-cloudflare-api-token-secret.yaml` is ignored in version control for
 
 ---
 
-## Step 3: Set Up Traefik as the Ingress Controller
+## Step 4: Set Up Traefik as the Ingress Controller
 
-### 3.1. **Create the Service Account and Role for Traefik**
+### 4.1. **Create the Service Account and Role for Traefik**
 
 1. **Apply the Service Account**:
    ```bash
-   kubectl apply -f traefik/04-account.yaml
+   kubectl apply -f traefik/05-account.yaml
    ```
 
 2. **Apply the ClusterRole**:
    ```bash
-   kubectl apply -f traefik/04-role.yaml
+   kubectl apply -f traefik/05-role.yaml
    ```
 
 3. **Apply the RoleBinding**:
    ```bash
-   kubectl apply -f traefik/05-role-binding.yaml
+   kubectl apply -f traefik/06-role-binding.yaml
    ```
 
-### 3.2. **Deploy Traefik**
+### 4.2. **Deploy Traefik**
 
 1. **Deploy the Traefik Ingress Controller**:
    ```bash
-   kubectl apply -f traefik/06-traefik-deployment.yaml
+   kubectl apply -f traefik/07-traefic-deployment.yaml
    ```
 
 2. **Create the Traefik Service**:
    ```bash
-   kubectl apply -f traefik/07-traefik-service.yaml
+   kubectl apply -f traefik/09-traefik-service.yaml
    ```
 
 3. **Apply the IngressClass for Traefik**:
@@ -101,21 +118,21 @@ The file `01-cloudflare-api-token-secret.yaml` is ignored in version control for
 
 ---
 
-## Step 4: (optional as a test) Deploy the Whoami Application
+## Step 5: (Optional) Deploy the Whoami Application
 
-### 4.1. **Deploy Whoami**
+### 5.1. **Deploy Whoami**
 
 1. **Apply the Whoami Deployment**:
    ```bash
-   kubectl apply -f whoami/09-whoami-deployment.yaml
+   kubectl apply -f whoami/10-whoami-deployment.yaml
    ```
 
 2. **Apply the Whoami Service**:
    ```bash
-   kubectl apply -f whoami/10-whoami-service.yaml
+   kubectl apply -f whoami/12-whoami-service.yaml
    ```
 
-### 4.2. **Configure the Whoami Ingress**
+### 5.2. **Configure the Whoami Ingress**
 
 1. **Apply the Whoami Ingress**:
    ```bash
@@ -130,10 +147,10 @@ The file `01-cloudflare-api-token-secret.yaml` is ignored in version control for
 
 ---
 
-## Step 5: Test the Setup
+## Step 6: Test the Setup
 
 1. **Ensure DNS is Set Up**:
-   Verify that `whoami.bykowski.dev` points to your VPS's public IP.
+   Verify that `*.bykowski.dev` points to your VPS's public IP.
 
 2. **Access Whoami**:
    - Test HTTP:
@@ -150,3 +167,4 @@ The file `01-cloudflare-api-token-secret.yaml` is ignored in version control for
    ```bash
    kubectl logs -n traefik -l app=traefik
    ```
+
